@@ -38,17 +38,19 @@ function SignIn() {
         }
      }
      const handleGoogleAuth=async () => {
-             const provider=new GoogleAuthProvider()
-             const result=await signInWithPopup(auth,provider)
-       try {
-         const {data}=await axios.post(`${serverUrl}/api/auth/google-auth`,{
-             email:result.user.email,
-         },{withCredentials:true})
-         dispatch(setUserData(data))
-       } catch (error) {
-         console.log(error)
-       }
-          }
+        setErr("")
+        try {
+            const provider=new GoogleAuthProvider()
+            const result=await signInWithPopup(auth,provider)
+            const {data}=await axios.post(`${serverUrl}/api/auth/google-auth`,{
+                email:result.user.email,
+            },{withCredentials:true})
+            dispatch(setUserData(data))
+        } catch (error) {
+            console.error(error)
+            setErr(error?.response?.data?.message || error?.message || "Google Sign-In failed")
+        }
+     }
     return (
         <div className='min-h-screen w-full flex items-center justify-center p-4' style={{ backgroundColor: bgColor }}>
             <div className={`bg-white rounded-xl shadow-lg w-full max-w-md p-8 border-[1px] `} style={{

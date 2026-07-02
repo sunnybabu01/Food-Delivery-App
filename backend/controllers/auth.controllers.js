@@ -136,6 +136,9 @@ export const googleAuth=async (req,res) => {
         const {fullName,email,mobile,role}=req.body
         let user=await User.findOne({email})
         if(!user){
+            if (!fullName || !mobile || !role) {
+                return res.status(400).json({ message: "User does not exist. Please Sign Up first." })
+            }
             user=await User.create({
                 fullName,email,mobile,role
             })

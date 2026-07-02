@@ -41,24 +41,26 @@ function SignUp() {
         }
      }
 
-     const handleGoogleAuth=async () => {
-        if(!mobile){
-          return setErr("mobile no is required")
-        }
-        const provider=new GoogleAuthProvider()
-        const result=await signInWithPopup(auth,provider)
-  try {
-    const {data}=await axios.post(`${serverUrl}/api/auth/google-auth`,{
-        fullName:result.user.displayName,
-        email:result.user.email,
-        role,
-        mobile
-    },{withCredentials:true})
-   dispatch(setUserData(data))
-  } catch (error) {
-    console.log(error)
-  }
-     }
+      const handleGoogleAuth=async () => {
+         if(!mobile){
+           return setErr("mobile no is required")
+         }
+         setErr("")
+         try {
+             const provider=new GoogleAuthProvider()
+             const result=await signInWithPopup(auth,provider)
+             const {data}=await axios.post(`${serverUrl}/api/auth/google-auth`,{
+                 fullName:result.user.displayName,
+                 email:result.user.email,
+                 role,
+                 mobile
+             },{withCredentials:true})
+             dispatch(setUserData(data))
+         } catch (error) {
+             console.error(error)
+             setErr(error?.response?.data?.message || error?.message || "Google Sign-Up failed")
+         }
+      }
     return (
         <div className='min-h-screen w-full flex items-center justify-center p-4' style={{ backgroundColor: bgColor }}>
             <div className={`bg-white rounded-xl shadow-lg w-full max-w-md p-8 border-[1px] `} style={{
