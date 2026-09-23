@@ -17,9 +17,14 @@ import { socketHandler } from "./socket.js"
 const app=express()
 const server=http.createServer(app)
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean)
+
 const io=new Server(server,{
    cors:{
-    origin:"http://localhost:5173",
+    origin: allowedOrigins,
     credentials:true,
     methods:['POST','GET']
 }
@@ -31,7 +36,7 @@ app.set("io",io)
 
 const port=process.env.PORT || 5000
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin: allowedOrigins,
     credentials:true
 }))
 app.use(express.json())
