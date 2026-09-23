@@ -136,11 +136,11 @@ export const googleAuth=async (req,res) => {
         const {fullName,email,mobile,role}=req.body
         let user=await User.findOne({email})
         if(!user){
-            if (!fullName || !mobile || !role) {
-                return res.status(400).json({ message: "User does not exist. Please Sign Up first." })
-            }
             user=await User.create({
-                fullName,email,mobile,role
+                fullName: fullName || email?.split("@")[0] || "User",
+                email,
+                mobile: mobile || "",
+                role: role || "user"
             })
         }
 
@@ -154,8 +154,7 @@ export const googleAuth=async (req,res) => {
   
         return res.status(200).json(user)
 
-
     } catch (error) {
-         return res.status(500).json(`googleAuth error ${error}`)
+         return res.status(500).json({ message: `googleAuth error: ${error.message || error}` })
     }
 }
